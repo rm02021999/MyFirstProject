@@ -1,11 +1,13 @@
 # Importing essential libraries
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 import pickle
 import numpy as np
 
+# Load the Random Forest CLassifier model
+filename = 'Batting-score-LassoReg-model.pkl'
+regressor = pickle.load(open(filename, 'rb'))
 
 app = Flask(__name__)
-regressor = pickle.load(open('first-innings-score-la-model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -53,6 +55,26 @@ def predict():
             temp_array = temp_array + [0,0,0,0,0,0,1,0]
         elif bowling_team == 'Sunrisers Hyderabad':
             temp_array = temp_array + [0,0,0,0,0,0,0,1]
+
+
+
+        venue = request.form['Venue']
+        if venue == 'Eden Gardens':
+            temp_array = temp_array + [1,0,0,0,0,0,0,0]
+        elif venue == 'Feroz Shah Kotla':
+            temp_array = temp_array + [0,1,0,0,0,0,0,0]
+        elif venue == 'M Chinnaswamy Stadium':
+            temp_array = temp_array + [0,0,1,0,0,0,0,0]
+        elif venue == 'MA Chidambaram Stadium, Chepauk':
+            temp_array = temp_array + [0,0,0,1,0,0,0,0]
+        elif venue == 'Sawai Mansingh Stadium':
+            temp_array = temp_array + [0,0,0,0,1,0,0,0]
+        elif venue == 'Punjab Cricket Association Stadium, Mohali':
+            temp_array = temp_array + [0,0,0,0,0,1,0,0]
+        elif venue == 'Rajiv Gandhi International Stadium, Uppal':
+            temp_array = temp_array + [0,0,0,0,0,0,1,0]
+        elif venue == 'Wankhede Stadium':
+            temp_array = temp_array + [0,0,0,0,0,0,0,1]
             
             
         overs = float(request.form['overs'])
@@ -69,7 +91,6 @@ def predict():
         return render_template('result.html', lower_limit = my_prediction-10, upper_limit = my_prediction+5)
 
 
-#if __name__ == '__main__':  app.run(host='0.0.0.0',port=8080)
 
 if __name__ == '__main__':
 	app.run(debug=True)
